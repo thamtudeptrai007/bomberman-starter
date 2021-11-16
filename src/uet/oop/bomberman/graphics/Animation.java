@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import sun.security.provider.ConfigFile;
 
 import java.awt.image.SinglePixelPackedSampleModel;
+import java.awt.peer.ScrollbarPeer;
 
 /**
  * Đối tượng hoạt ảnh lưu trữ các ảnh trong hoạt ảnh.
@@ -56,6 +57,24 @@ public class Animation {
     /*
      * FlameSegment.
      */
+    public static Animation explosion_horizontal = new Animation(Sprite.explosion_horizontal,
+                                                                    Sprite.explosion_horizontal2,
+                                                                        Sprite.explosion_horizontal2);
+    public static Animation explosion_horizontal_left = new Animation(Sprite.explosion_horizontal_left_last,
+                                                                        Sprite.explosion_horizontal_left_last1,
+                                                                            Sprite.explosion_horizontal_left_last2);
+    public static Animation explosion_horizontal_right = new Animation(Sprite.explosion_horizontal_right_last,
+                                                                            Sprite.explosion_horizontal_right_last1,
+                                                                                Sprite.explosion_horizontal_right_last2);
+    public static Animation explosion_vertical = new Animation(Sprite.explosion_vertical,
+                                                                    Sprite.explosion_vertical1,
+                                                                        Sprite.explosion_vertical2);
+    public static Animation explosion_vertical_top = new Animation(Sprite.explosion_vertical_top_last,
+                                                                        Sprite.explosion_vertical_top_last1,
+                                                                            Sprite.explosion_vertical_top_last2);
+    public static Animation explosion_vertical_down = new Animation(Sprite.explosion_vertical_down_last,
+                                                                        Sprite.explosion_vertical_down_last1,
+                                                                            Sprite.explosion_vertical_down_last2);
 
     /*
      * Brick FlameSegment
