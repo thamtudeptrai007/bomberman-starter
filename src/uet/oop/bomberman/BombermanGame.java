@@ -20,8 +20,8 @@ import java.util.Scanner;
 
 public class BombermanGame extends Application {
 
-    public static final int WIDTH = 20;
-    public static final int HEIGHT = 15;
+    public static final int WIDTH = 31;
+    public static final int HEIGHT = 13;
     public static final int FPS = 15;
     public static final long TPS = 1_000_000_000 / FPS;
 
@@ -83,18 +83,18 @@ public class BombermanGame extends Application {
         int level = scanner.nextInt();
         int height = scanner.nextInt();
         int width = scanner.nextInt();
-        char [][] map = new char[height][width];
+        char [][] map = new char[width][height];
 
         String line = scanner.nextLine();
         for (int i = 0; i < height; i++) {
             line = scanner.nextLine();
             for (int j = 0; j < line.length(); j++)
-                map[i][j] = line.charAt(j);
+                map[j][i] = line.charAt(j);
         }
 
 
-        for (int x = 0; x < height; x++)
-            for (int y = 0; y < width; y++) {
+        for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++) {
                 Entity object = null;
                 switch (map[x][y]) {
                     case '#':
