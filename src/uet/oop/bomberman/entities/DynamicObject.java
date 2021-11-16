@@ -14,6 +14,7 @@ import java.util.List;
 public abstract class DynamicObject extends Entity {
 
     protected List<Image> animation = new ArrayList<>();
+    protected double timer = 0;
     protected int currentImage = 0;
 
     public DynamicObject(int x, int y, Image... images) {
