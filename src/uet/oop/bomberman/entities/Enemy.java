@@ -10,10 +10,10 @@ public class Enemy extends MoveableObject {
     }
 
     /**
-     * update.
+     * updateProperty.
      */
     @Override
-    public void update(List<Entity> entities) {
+    public void updateProperty(List<Entity> entities, long now) {
     }
 
     /**

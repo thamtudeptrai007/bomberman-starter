@@ -20,6 +20,8 @@ public class BombermanGame extends Application {
 
     public static final int WIDTH = 20;
     public static final int HEIGHT = 15;
+    public static final int FPS = 15;
+    public static final long TPS = 1_000_000_000 / FPS;
 
     private GraphicsContext gc;
     private Canvas canvas;
@@ -49,10 +51,14 @@ public class BombermanGame extends Application {
         stage.show();
 
         AnimationTimer timer = new AnimationTimer() {
+            private long lastUpdate = 0;
             @Override
             public void handle(long now) {
-                update(now);
-                render();
+                if (now - lastUpdate >= TPS) {
+                    update(now);
+                    render();
+                    lastUpdate = now;
+                }
             }
         };
         timer.start();
@@ -67,15 +73,6 @@ public class BombermanGame extends Application {
         entities.add(bomberman);
 
         keyboard(scene, bomberman);
-
-        DynamicObject bomb = new Bomb(10, 7, 0, Animation.bomb.getFxImages());
-        entities.add(bomb);
-        DynamicObject bomb1 = new Bomb(9, 6, 0, Animation.bomb.getFxImages());
-        entities.add(bomb1);
-        DynamicObject bomb2 = new Bomb(9, 7, 0, Animation.bomb.getFxImages());
-        entities.add(bomb2);
-        DynamicObject bomb3 = new Bomb(10, 6, 0, Animation.bomb.getFxImages());
-        entities.add(bomb3);
     }
 
     public void createMap() {
@@ -93,8 +90,8 @@ public class BombermanGame extends Application {
     }
 
     public void update(long now) {
-        for (Entity entity: entities) {
-            entity.update(entities);
+        for (int i = 0; i < entities.size(); i++) {
+            entities.get(i).update(entities, now);
         }
     }
 
@@ -103,7 +100,7 @@ public class BombermanGame extends Application {
         entities.forEach(g -> g.render(gc));
     }
 
-    public void keyboard(Scene scene,Bomber bomberman) {
+    public void keyboard(Scene scene, Bomber bomberman) {
         scene.setOnKeyPressed(keyEvent -> {
             keyEvents.add(keyEvent);
             bomberman.press(keyEvent);

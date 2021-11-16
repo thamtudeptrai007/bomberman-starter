@@ -2,10 +2,15 @@ package uet.oop.bomberman.entities;
 
 import javafx.scene.image.Image;
 
-public class Explosion extends Bomb{
+import java.util.List;
+
+public class Explosion extends DynamicObject{
 
     public Explosion(int x, int y, long setupTime, Image... images) {
-        super(x, y, setupTime, images);
-        this.setupTime = setupTime;
+        super(x, y, images);
+    }
+    @Override
+    public void update(List<Entity> entities, long now) {
+
     }
 }

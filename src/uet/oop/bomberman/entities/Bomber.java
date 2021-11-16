@@ -6,30 +6,27 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import uet.oop.bomberman.graphics.Animation;
 
 import java.util.List;
 
 public class Bomber extends MoveableObject {
+    private boolean hasNewBomb = false;
+    private int bombSize = 1;
 
     public Bomber(int x, int y, Image... images) {
         super(x, y, images);
     }
 
-    /**
-     * update
-     */
     @Override
-    public void update(List<Entity> entities) {
-        if (moving) {
-            move(entities);
-            currentImage = (currentImage + 1) % (moveAnimation.get(direction.getValue()).size() * 5);
+    public void updateProperty(List<Entity> entities, long now) {
+        if (hasNewBomb) {
+            hasNewBomb = false;
+            Bomb bomb = new Bomb(0, 0, bombSize, now, Animation.bomb.getFxImages());
+            bomb.setX(x);
+            bomb.setY(y);
+            entities.add(bomb);
         }
-        else {
-            if (currentImage != 0) {
-                currentImage = (currentImage + 1) % (moveAnimation.get(direction.getValue()).size() * 5);
-            }
-        }
-        img = moveAnimation.get(direction.getValue()).get(currentImage / 5);
     }
 
     /**
@@ -62,6 +59,7 @@ public class Bomber extends MoveableObject {
                 moving = true;
                 break;
             case SPACE:
+                hasNewBomb = true;
                 break;
             default:
         }
