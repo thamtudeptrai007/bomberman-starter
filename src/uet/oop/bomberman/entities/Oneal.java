@@ -7,7 +7,7 @@ import java.util.List;
 public class Oneal extends Enemy {
     public Oneal(int x, int y, Image... images) {
         super(x, y, images);
-        SPF = 0.5;
+        SPF = 0.25;
     }
 
     @Override

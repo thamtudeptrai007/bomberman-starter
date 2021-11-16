@@ -9,8 +9,11 @@ import java.util.Collections;
 public abstract class MoveableObject extends DynamicObject {
     public static final int DEFAULTMOVESPEED = 4;
     protected int MOVESPEED = DEFAULTMOVESPEED;
-    protected double SPF = 1;
+    protected int MOVESPEEDX = 0;
+    protected int MOVESPEEDY = 0;
+    protected double SPF = 0.8;
     protected Direction direction = Direction.RIGHT;
+    protected Direction animationDirection = Direction.RIGHT;
     protected boolean moving = false;
     protected List<List<Image>> moveAnimation = new ArrayList<>();
     protected List<Image> deadAnimation = new ArrayList<>();
@@ -25,23 +28,55 @@ public abstract class MoveableObject extends DynamicObject {
     public void move(List<Entity> entities) {
         int newX = x;
         int newY = y;
+        boolean changeAnimationDirection = false;
         switch (direction) {
-            case RIGHT:
-                newX += MOVESPEED;
-                break;
             case LEFT:
-                newX -= MOVESPEED;
-                break;
-            case UP:
-                newY -= MOVESPEED;
+            case RIGHT:
+                newX += MOVESPEEDX;
                 break;
             case DOWN:
-                newY += MOVESPEED;
+            case UP:
+                newY += MOVESPEEDY;
                 break;
         }
         if (canMove(entities, newX, newY)) {
             x = newX;
             y = newY;
+        } else {
+            changeAnimationDirection = true;
+            newX = x;
+            newY = y;
+        }
+        switch (direction) {
+            case LEFT:
+            case RIGHT:
+                newY += MOVESPEEDY;
+                if (MOVESPEEDY > 0) {
+                    animationDirection = Direction.DOWN;
+                }
+                if (MOVESPEEDY < 0){
+                    animationDirection = Direction.UP;
+                }
+                break;
+            case DOWN:
+            case UP:
+                newX += MOVESPEEDX;
+                if (MOVESPEEDX > 0) {
+                    animationDirection = Direction.RIGHT;
+                }
+                if (MOVESPEEDX < 0){
+                    animationDirection = Direction.LEFT;
+                }
+                break;
+        }
+        if (canMove(entities, newX, newY)) {
+            x = newX;
+            y = newY;
+        } else {
+            changeAnimationDirection = false;
+        }
+        if (!changeAnimationDirection) {
+            animationDirection = direction;
         }
     }
 

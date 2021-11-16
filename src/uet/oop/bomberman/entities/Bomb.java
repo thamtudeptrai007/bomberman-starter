@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Bomb extends DynamicObject {
     public static final int TIMETOEXPLODE = 2;
-    private static final double SPF = 0.5;
+    private static final double SPF = 0.25;
     protected long setupTime;
     private int size;
 
@@ -24,7 +24,15 @@ public class Bomb extends DynamicObject {
     @Override
     public void update(List<Entity> entities, long now) {
         if (now - setupTime >= 2_000_000_000) {
-            entities.remove(this);
+            for (Entity entity : entities) {
+                if (entity instanceof Bomber) {
+                    Bomber bomber = (Bomber) entity;
+                    if (bomber.getBombList().contains(this)) {
+                        bomber.removeBomb(entities, this);
+                        break;
+                    }
+                }
+            }
             makeExplosion(entities, now);
             return;
         }
@@ -34,30 +42,102 @@ public class Bomb extends DynamicObject {
     }
 
     public void makeExplosion(List<Entity> entities, long now) {
-        int posX = x / Sprite.SCALED_SIZE;
-        int posY = y / Sprite.SCALED_SIZE;
-        entities.add(new Explosion(posX, posY,
+        int posX = getXUnit();
+        int posY = getYUnit();
+        entities.add(new Flame(posX, posY,
                 now, Animation.bomb_exploded.getFxImages()));
-        if (size == 1) {
-            return;
+        createFlameRight(entities, now);
+        createFlameLeft(entities, now);
+        createFlameTop(entities, now);
+        createFlameBottom(entities, now);
+    }
+
+    public void createFlameRight(List<Entity> entities, long now) {
+        int posX = getXUnit();
+        int posY = getYUnit();
+        for (int i = 1; i <= size; i++) {
+            Entity entity = getAt(posX + i, posY, entities);
+            if (entity != null) {
+                if (entity instanceof Brick) {
+                    entities.add(new BrickExplode(posX + i, posY, now,
+                            Animation.brick_explode.getFxImages()));
+                    entities.remove(entity);
+                }
+                break;
+            }
+            if (i < size) {
+                entities.add(new Flame(posX + i, posY, now,
+                        Animation.explosion_horizontal.getFxImages()));
+            } else {
+                entities.add(new Flame(posX + size, posY, now,
+                        Animation.explosion_horizontal_right.getFxImages()));
+            }
         }
-        entities.add(new Explosion(posX + size - 1, posY, now,
-                Animation.explosion_horizontal_right.getFxImages()));
-        entities.add(new Explosion(posX - size + 1, posY, now,
-                Animation.explosion_horizontal_left.getFxImages()));
-        entities.add(new Explosion(posX, posY - size + 1, now,
-                Animation.explosion_vertical_top.getFxImages()));
-        entities.add(new Explosion(posX, posY + size - 1, now,
-                Animation.explosion_vertical_down.getFxImages()));
-        for (int i = 1; i < size - 1; i++) {
-            entities.add(new Explosion(posX + i, posY, now,
-                    Animation.explosion_horizontal.getFxImages()));
-            entities.add(new Explosion(posX - i, posY, now,
-                    Animation.explosion_horizontal.getFxImages()));
-            entities.add(new Explosion(posX, posY - i, now,
-                    Animation.explosion_vertical.getFxImages()));
-            entities.add(new Explosion(posX, posY + i, now,
-                    Animation.explosion_vertical.getFxImages()));
+    }
+    public void createFlameLeft(List<Entity> entities, long now) {
+        int posX = getXUnit();
+        int posY = getYUnit();
+        for (int i = 1; i <= size; i++) {
+            Entity entity = getAt(posX - i, posY, entities);
+            if (entity != null) {
+                if (entity instanceof Brick) {
+                    entities.add(new BrickExplode(posX - i, posY, now,
+                            Animation.brick_explode.getFxImages()));
+                    entities.remove(entity);
+                }
+                break;
+            }
+            if (i < size) {
+                entities.add(new Flame(posX - i, posY, now,
+                        Animation.explosion_horizontal.getFxImages()));
+            } else {
+                entities.add(new Flame(posX - size, posY, now,
+                        Animation.explosion_horizontal_left.getFxImages()));
+            }
+        }
+    }
+    public void createFlameTop(List<Entity> entities, long now) {
+        int posX = getXUnit();
+        int posY = getYUnit();
+        for (int i = 1; i <= size; i++) {
+            Entity entity = getAt(posX, posY - i, entities);
+            if (entity != null) {
+                if (entity instanceof Brick) {
+                    entities.add(new BrickExplode(posX, posY - i, now,
+                            Animation.brick_explode.getFxImages()));
+                    entities.remove(entity);
+                }
+                break;
+            }
+            if (i < size) {
+                entities.add(new Flame(posX, posY - i, now,
+                        Animation.explosion_vertical.getFxImages()));
+            } else {
+                entities.add(new Flame(posX, posY - size, now,
+                        Animation.explosion_vertical_top.getFxImages()));
+            }
+        }
+    }
+    public void createFlameBottom(List<Entity> entities, long now) {
+        int posX = getXUnit();
+        int posY = getYUnit();
+        for (int i = 1; i <= size; i++) {
+            Entity entity = getAt(posX, posY + i, entities);
+            if (entity != null) {
+                if (entity instanceof Brick) {
+                    entities.add(new BrickExplode(posX, posY + i, now,
+                            Animation.brick_explode.getFxImages()));
+                    entities.remove(entity);
+                }
+                break;
+            }
+            if (i < size) {
+                entities.add(new Flame(posX, posY + i, now,
+                        Animation.explosion_vertical.getFxImages()));
+            } else {
+                entities.add(new Flame(posX, posY + size, now,
+                        Animation.explosion_vertical_down.getFxImages()));
+            }
         }
     }
 
