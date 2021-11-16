@@ -6,6 +6,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
@@ -22,12 +23,13 @@ public class BombermanGame extends Application {
 
     public static final int WIDTH = 31;
     public static final int HEIGHT = 13;
-    public static final int FPS = 15;
-    public static final long TPS = 1_000_000_000 / FPS;
+    public static final int FPS = 24;
+    public static final long TPF = 1_000_000_000 / FPS;
 
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
+    private List<Entity> stillObjects = new ArrayList<>();
     private List<KeyEvent> keyEvents = new ArrayList<>();
 
 
@@ -54,9 +56,10 @@ public class BombermanGame extends Application {
 
         AnimationTimer timer = new AnimationTimer() {
             private long lastUpdate = 0;
+
             @Override
             public void handle(long now) {
-                if (now - lastUpdate >= TPS) {
+                if (now - lastUpdate >= TPF) {
                     update(now);
                     render();
                     lastUpdate = now;
@@ -65,33 +68,35 @@ public class BombermanGame extends Application {
         };
         timer.start();
 
-        createMap();
-
-        Bomber bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
-        bomberman.setMoveAnimation(Direction.LEFT, Animation.player_left.getFxImages());
-        bomberman.setMoveAnimation(Direction.RIGHT, Animation.player_right.getFxImages());
-        bomberman.setMoveAnimation(Direction.UP, Animation.player_up.getFxImages());
-        bomberman.setMoveAnimation(Direction.DOWN, Animation.player_down.getFxImages());
-        entities.add(bomberman);
-
-        keyboard(scene, bomberman);
+        createMap(scene);
     }
 
-    public void createMap() throws IOException {
+    public void createMap(Scene scene) throws IOException {
         FileInputStream fis = new FileInputStream("res/levels/Level1.txt");
         Scanner scanner = new Scanner(fis);
         int level = scanner.nextInt();
         int height = scanner.nextInt();
         int width = scanner.nextInt();
-        char [][] map = new char[width][height];
-
-        String line = scanner.nextLine();
+        char[][] map = new char[width][height];
+        scanner.nextLine();
+        String line;
         for (int i = 0; i < height; i++) {
             line = scanner.nextLine();
             for (int j = 0; j < line.length(); j++)
                 map[j][i] = line.charAt(j);
         }
 
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 0; j < HEIGHT; j++) {
+                Entity object;
+                if (j == 0 || j == HEIGHT - 1 || i == 0 || i == WIDTH - 1) {
+                    object = new Wall(i, j, Sprite.wall.getFxImage());
+                } else {
+                    object = new Grass(i, j, Sprite.grass.getFxImage());
+                }
+                stillObjects.add(object);
+            }
+        }
 
         for (int y = 0; y < height; y++)
             for (int x = 0; x < width; x++) {
@@ -103,23 +108,54 @@ public class BombermanGame extends Application {
                     case '*':
                         object = new Brick(x, y, Sprite.brick.getFxImage());
                         break;
-                    //case 'x':
-                    //case '1':
-                    //case 'b':
-                    //case 'f':
-                    //case 's':
-                        //break;
-                    //case 'p':
-                        //object = new Bomber(x, y, Sprite.bom)
-                        //break;
-                    //case '2':
-                        //object = new
-                        //break;
-                    default:
-                        object = new Grass(x, y, Sprite.grass.getFxImage());
+                    case 'x':
+                        object = new Brick(x, y, Sprite.brick.getFxImage());
                         break;
+                    case 'b':
+                        entities.add(new BombItem(x, y, Sprite.powerup_bombs.getFxImage()));
+                        object = new Brick(x, y, Sprite.brick.getFxImage());
+                        break;
+                    case 'f':
+                        entities.add(new FlameItem(x, y, Sprite.powerup_flames.getFxImage()));
+                        object = new Brick(x, y, Sprite.brick.getFxImage());
+                        break;
+                    case 's':
+                        entities.add(new SpeedItem(x, y, Sprite.powerup_speed.getFxImage()));
+                        object = new Brick(x, y, Sprite.brick.getFxImage());
+                        break;
+                    case 'p':
+                        Bomber bomber = new Bomber(x, y, Sprite.player_right.getFxImage());
+                        bomber.setMoveAnimation(Direction.LEFT, Animation.player_left.getFxImages());
+                        bomber.setMoveAnimation(Direction.RIGHT, Animation.player_right.getFxImages());
+                        bomber.setMoveAnimation(Direction.UP, Animation.player_up.getFxImages());
+                        bomber.setMoveAnimation(Direction.DOWN, Animation.player_down.getFxImages());
+                        bomber.setDeadAnimation(Animation.player_dead.getFxImages());
+                        keyboard(scene, bomber);
+                        object = bomber;
+                        break;
+                    case '1':
+                        Balloom balloom = new Balloom(x, y, Animation.balloom_left.getFxImages());
+                        balloom.setMoveAnimation(Direction.LEFT, Animation.balloom_left.getFxImages());
+                        balloom.setMoveAnimation(Direction.RIGHT, Animation.balloom_right.getFxImages());
+                        balloom.setMoveAnimation(Direction.UP, Animation.balloom_right.getFxImages());
+                        balloom.setMoveAnimation(Direction.DOWN, Animation.balloom_left.getFxImages());
+                        balloom.setDeadAnimation(Animation.balloom_dead.getFxImages());
+                        object = balloom;
+                        break;
+                    case '2':
+                        Oneal oneal = new Oneal(x, y, Animation.oneal_left.getFxImages());
+                        oneal.setMoveAnimation(Direction.LEFT, Animation.oneal_left.getFxImages());
+                        oneal.setMoveAnimation(Direction.RIGHT, Animation.oneal_right.getFxImages());
+                        oneal.setMoveAnimation(Direction.UP, Animation.oneal_right.getFxImages());
+                        oneal.setMoveAnimation(Direction.DOWN, Animation.oneal_left.getFxImages());
+                        oneal.setDeadAnimation(Animation.oneal_dead.getFxImages());
+                        object = oneal;
+                        break;
+                    default:
                 }
-                entities.add(object);
+                if (object != null) {
+                    entities.add(object);
+                }
             }
     }
 
@@ -131,19 +167,24 @@ public class BombermanGame extends Application {
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        stillObjects.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
     }
 
     public void keyboard(Scene scene, Bomber bomberman) {
         scene.setOnKeyPressed(keyEvent -> {
+            bomberman.press(keyEvent, keyEvents.isEmpty()
+                    && (keyEvent.getCode() == KeyCode.LEFT
+                    || keyEvent.getCode() == KeyCode.RIGHT
+                    || keyEvent.getCode() == KeyCode.DOWN
+                    || keyEvent.getCode() == KeyCode.UP));
             keyEvents.add(keyEvent);
-            bomberman.press(keyEvent);
         });
         scene.setOnKeyReleased(keyEvent -> {
             bomberman.release(keyEvent);
             keyEvents.removeIf(e -> e.getCode().equals(keyEvent.getCode()));
             if (keyEvents.size() > 0) {
-                bomberman.press(keyEvents.get(keyEvents.size() - 1));
+                bomberman.press(keyEvents.get(0), true);
             }
         });
     }

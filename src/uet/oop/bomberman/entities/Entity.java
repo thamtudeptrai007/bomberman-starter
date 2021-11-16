@@ -27,25 +27,58 @@ public abstract class Entity {
         this.img = img;
     }
 
+    public static Entity getAt(int xUnit, int yUnit, List<Entity> entities) {
+        for (Entity entity : entities) {
+            if (entity.getXUnit() == xUnit && entity.getYUnit() == yUnit
+                    && (entity instanceof Brick || entity instanceof Wall)) {
+                return entity;
+            }
+        }
+        return null;
+    }
+
     public void render(GraphicsContext gc) {
         gc.drawImage(img, x, y);
     }
 
     public abstract void update(List<Entity> entities, long now);
 
-    public int getX() {
-        return x;
+    public boolean checkCollision(Entity entity) {
+        int myleft = this.x;
+        int myright = this.x + Sprite.SCALED_SIZE - 1;
+        int mytop = this.y;
+        int mybottom = this.y + Sprite.SCALED_SIZE - 1;
+        int otherleft = entity.getX();
+        int otherright = entity.getX() + Sprite.SCALED_SIZE - 1;
+        int othertop = entity.getY();
+        int otherbottom = entity.getY() + Sprite.SCALED_SIZE - 1;
+        return (mybottom >= othertop) && (mytop <= otherbottom) && (myright >= otherleft) && (myleft <= otherright);
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public static boolean checkCollision(int myleft, int mytop, Entity entity) {
+        int myright = myleft + Sprite.SCALED_SIZE - 1;
+        int mybottom = mytop + Sprite.SCALED_SIZE - 1;
+        int otherleft = entity.getX();
+        int otherright = entity.getX() + Sprite.SCALED_SIZE - 1;
+        int othertop = entity.getY();
+        int otherbottom = entity.getY() + Sprite.SCALED_SIZE - 1;
+        return (mybottom >= othertop) && (mytop <= otherbottom) && (myright >= otherleft) && (myleft <= otherright);
+    }
+
+    public int getX() {
+        return x;
     }
 
     public int getY() {
         return y;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public int getXUnit() {
+        return x / Sprite.SCALED_SIZE;
     }
+
+    public int getYUnit() {
+        return y / Sprite.SCALED_SIZE;
+    }
+
 }
