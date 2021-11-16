@@ -122,6 +122,7 @@ public class BombermanGame extends Application {
                 }
                 entities.add(object);
             }
+
         /*for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
                 Entity object;
