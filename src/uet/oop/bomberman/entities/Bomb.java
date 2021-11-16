@@ -6,11 +6,10 @@ public class Bomb extends DynamicObject {
     public static final int TIMETOEXPLODE = 2;
     private long setupTime;
 
-    public Bomb(int x, int y, Image img, long setupTime) {
-        super(x, y, img);
+    public Bomb(int x, int y, long setupTime, Image... images) {
+        super(x, y, images);
         this.setupTime = setupTime;
     }
-
 
     /**
      * update
@@ -18,8 +17,8 @@ public class Bomb extends DynamicObject {
     @Override
     public void update() {
         try {
-            img = imgList.get(direction.getValue()).get(currentImage / 15);
-            currentImage = (currentImage + 1) % (imgList.get(direction.getValue()).size() * 15);
+            img = animation.get(currentImage / 15);
+            currentImage = (currentImage + 1) % (animation.size() * 15);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);

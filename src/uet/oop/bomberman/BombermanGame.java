@@ -6,8 +6,10 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
+import uet.oop.bomberman.graphics.Animation;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
@@ -57,21 +59,13 @@ public class BombermanGame extends Application {
         createMap();
 
         Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
-        DynamicObject bomb = new Bomb(10, 7, Sprite.bomb.getFxImage(), 0);
-        bomb.addImage(Direction.DEFAULT, Sprite.bomb.getFxImage(), Sprite.bomb_1.getFxImage(),
-                Sprite.bomb_2.getFxImage(), Sprite.bomb_1.getFxImage());
+        DynamicObject bomb = new Bomb(10, 7, 0, Animation.bomb.getFxImages());
         entities.add(bomb);
-        DynamicObject bomb1 = new Bomb(9, 6, Sprite.bomb.getFxImage(), 0);
-        bomb1.addImage(Direction.DEFAULT, Sprite.bomb.getFxImage(), Sprite.bomb_1.getFxImage(),
-                Sprite.bomb_2.getFxImage(), Sprite.bomb_1.getFxImage());
+        DynamicObject bomb1 = new Bomb(9, 6, 0, Animation.bomb.getFxImages());
         entities.add(bomb1);
-        DynamicObject bomb2 = new Bomb(9, 7, Sprite.bomb.getFxImage(), 0);
-        bomb2.addImage(Direction.DEFAULT, Sprite.bomb.getFxImage(), Sprite.bomb_1.getFxImage(),
-                Sprite.bomb_2.getFxImage(), Sprite.bomb_1.getFxImage());
+        DynamicObject bomb2 = new Bomb(9, 7, 0, Animation.bomb.getFxImages());
         entities.add(bomb2);
-        DynamicObject bomb3 = new Bomb(10, 6, Sprite.bomb.getFxImage(), 0);
-        bomb3.addImage(Direction.DEFAULT, Sprite.bomb.getFxImage(), Sprite.bomb_1.getFxImage(),
-                Sprite.bomb_2.getFxImage(), Sprite.bomb_1.getFxImage());
+        DynamicObject bomb3 = new Bomb(10, 6, 0, Animation.bomb.getFxImages());
         entities.add(bomb3);
     }
 
