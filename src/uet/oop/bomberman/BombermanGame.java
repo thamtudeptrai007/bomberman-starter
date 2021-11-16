@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Animation;
@@ -23,7 +24,7 @@ public class BombermanGame extends Application {
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
-    private List<Entity> stillObjects = new ArrayList<>();
+    private List<KeyEvent> keyEvents = new ArrayList<>();
 
 
     public static void main(String[] args) {
@@ -58,7 +59,15 @@ public class BombermanGame extends Application {
 
         createMap();
 
-        Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
+        Bomber bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
+        bomberman.setMoveAnimation(Direction.LEFT, Animation.player_left.getFxImages());
+        bomberman.setMoveAnimation(Direction.RIGHT, Animation.player_right.getFxImages());
+        bomberman.setMoveAnimation(Direction.UP, Animation.player_up.getFxImages());
+        bomberman.setMoveAnimation(Direction.DOWN, Animation.player_down.getFxImages());
+        entities.add(bomberman);
+
+        keyboard(scene, bomberman);
+
         DynamicObject bomb = new Bomb(10, 7, 0, Animation.bomb.getFxImages());
         entities.add(bomb);
         DynamicObject bomb1 = new Bomb(9, 6, 0, Animation.bomb.getFxImages());
@@ -78,18 +87,33 @@ public class BombermanGame extends Application {
                 } else {
                     object = new Grass(i, j, Sprite.grass.getFxImage());
                 }
-                stillObjects.add(object);
+                entities.add(object);
             }
         }
     }
 
     public void update(long now) {
-        entities.forEach(Entity::update);
+        for (Entity entity: entities) {
+            entity.update(entities);
+        }
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        stillObjects.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
+    }
+
+    public void keyboard(Scene scene,Bomber bomberman) {
+        scene.setOnKeyPressed(keyEvent -> {
+            keyEvents.add(keyEvent);
+            bomberman.press(keyEvent);
+        });
+        scene.setOnKeyReleased(keyEvent -> {
+            bomberman.release(keyEvent);
+            keyEvents.removeIf(e -> e.getCode().equals(keyEvent.getCode()));
+            if (keyEvents.size() > 0) {
+                bomberman.press(keyEvents.get(keyEvents.size() - 1));
+            }
+        });
     }
 }
