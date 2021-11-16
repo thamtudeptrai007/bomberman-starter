@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 
-public class MoveableObject extends DynamicObject {
+public abstract class MoveableObject extends DynamicObject {
     public static final int MOVESPEED = 1;
     protected Direction direction = Direction.RIGHT;
     protected boolean moving = false;
@@ -20,39 +20,30 @@ public class MoveableObject extends DynamicObject {
         }
     }
 
-    @Override
-    public void update() {
-        if (moving) {
-            move();
-        }
-    }
-
-    public void move() {
+    public void move(List<Entity> entities) {
         int newX = x;
         int newY = y;
         switch (direction) {
             case RIGHT:
-                newY += MOVESPEED;
-                break;
-            case LEFT:
-                newY -= MOVESPEED;
-                break;
-            case UP:
-                newX -= MOVESPEED;
-                break;
-            case DOWN:
                 newX += MOVESPEED;
                 break;
+            case LEFT:
+                newX -= MOVESPEED;
+                break;
+            case UP:
+                newY -= MOVESPEED;
+                break;
+            case DOWN:
+                newY += MOVESPEED;
+                break;
         }
-        if (canMove(newX, newY)) {
+        if (canMove(entities, newX, newY)) {
             x = newX;
             y = newY;
         }
     }
 
-    public boolean canMove(int newX, int newY) {
-        return true;
-    }
+    public abstract boolean canMove(List<Entity> entities, int newX, int newY);
 
     public void setMoveAnimation(Direction direction, Image... images) {
         moveAnimation.get(direction.getValue()).clear();

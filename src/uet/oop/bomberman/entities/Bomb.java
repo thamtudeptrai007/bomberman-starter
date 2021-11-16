@@ -2,9 +2,11 @@ package uet.oop.bomberman.entities;
 
 import javafx.scene.image.Image;
 
+import java.util.List;
+
 public class Bomb extends DynamicObject {
     public static final int TIMETOEXPLODE = 2;
-    private long setupTime;
+    protected long setupTime;
 
     public Bomb(int x, int y, long setupTime, Image... images) {
         super(x, y, images);
@@ -15,7 +17,7 @@ public class Bomb extends DynamicObject {
      * update
      */
     @Override
-    public void update() {
+    public void update(List<Entity> entities) {
         try {
             img = animation.get(currentImage / 15);
             currentImage = (currentImage + 1) % (animation.size() * 15);
