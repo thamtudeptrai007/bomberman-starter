@@ -7,12 +7,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import uet.oop.bomberman.graphics.Animation;
+import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.List;
 
 public class Bomber extends MoveableObject {
     private boolean hasNewBomb = false;
-    private int bombSize = 1;
+    private int bombSize = 4;
 
     public Bomber(int x, int y, Image... images) {
         super(x, y, images);
@@ -22,9 +23,10 @@ public class Bomber extends MoveableObject {
     public void updateProperty(List<Entity> entities, long now) {
         if (hasNewBomb) {
             hasNewBomb = false;
-            Bomb bomb = new Bomb(0, 0, bombSize, now, Animation.bomb.getFxImages());
-            bomb.setX(x);
-            bomb.setY(y);
+            int posX = (x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE;
+            int posY = (y + Sprite.SCALED_SIZE / 2)/ Sprite.SCALED_SIZE;
+            Bomb bomb = new Bomb(posX, posY,
+                    bombSize, now, Animation.bomb.getFxImages());
             entities.add(bomb);
         }
     }
