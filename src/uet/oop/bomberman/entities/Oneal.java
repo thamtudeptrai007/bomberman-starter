@@ -4,9 +4,10 @@ import javafx.scene.image.Image;
 
 import java.util.List;
 
-public abstract class Enemy extends MoveableObject {
-    public Enemy(int x, int y, Image... images) {
+public class Oneal extends Enemy {
+    public Oneal(int x, int y, Image... images) {
         super(x, y, images);
+        SPF = 0.5;
     }
 
     @Override
@@ -20,12 +21,11 @@ public abstract class Enemy extends MoveableObject {
         img = moveAnimation.get(direction.getValue()).get(currentImage);
     }
 
-    public abstract  void autoUpdate(List<Entity> entities, long now);
     /**
-     * check can move to (newX, newY).
+     * updateProperty.
      */
     @Override
-    public boolean canMove(List<Entity> entities, int newX, int newY) {
-        return true;
+    public void autoUpdate(List<Entity> entities, long now) {
+
     }
 }

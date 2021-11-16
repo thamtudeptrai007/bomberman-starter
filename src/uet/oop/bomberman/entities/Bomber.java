@@ -18,9 +18,11 @@ public class Bomber extends MoveableObject {
     public Bomber(int x, int y, Image... images) {
         super(x, y, images);
     }
-
+    /**
+     * update
+     */
     @Override
-    public void updateProperty(List<Entity> entities, long now) {
+    public void update(List<Entity> entities, long now) {
         if (hasNewBomb) {
             hasNewBomb = false;
             int posX = (x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE;
@@ -29,6 +31,14 @@ public class Bomber extends MoveableObject {
                     bombSize, now, Animation.bomb.getFxImages());
             entities.add(bomb);
         }
+        if (moving) {
+            move(entities);
+        }
+        if (currentImage != 0) {
+            timer += SPF;
+            currentImage = (int) timer % moveAnimation.get(direction.getValue()).size();
+        }
+        img = moveAnimation.get(direction.getValue()).get(currentImage);
     }
 
     /**

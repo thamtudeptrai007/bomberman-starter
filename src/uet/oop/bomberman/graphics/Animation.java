@@ -27,9 +27,9 @@ public class Animation {
      */
     // Balloom
     public static Animation balloom_left = new Animation(Sprite.balloom_left1,
-            Sprite.balloom_left2, Sprite.balloom_left3);
+            Sprite.balloom_left2, Sprite.balloom_left3, Sprite.balloom_left2);
     public static Animation balloom_right = new Animation(Sprite.balloom_right1,
-            Sprite.balloom_right2, Sprite.balloom_right3);
+            Sprite.balloom_right2, Sprite.balloom_right3, Sprite.balloom_right2);
     public static Animation balloom_dead = new Animation(Sprite.balloom_dead,
             Sprite.mob_dead1, Sprite.mob_dead2, Sprite.mob_dead3);
 
