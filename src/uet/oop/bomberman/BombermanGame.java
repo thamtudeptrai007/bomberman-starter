@@ -6,19 +6,17 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Animation;
 import uet.oop.bomberman.graphics.Sprite;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class BombermanGame extends Application {
 
@@ -80,19 +78,20 @@ public class BombermanGame extends Application {
     }
 
     public void createMap() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("res/levels/Level1.txt"));
-        int level = Integer.parseInt(br.readLine());
-        int height = Integer.parseInt(br.readLine());
-        int width = Integer.parseInt(br.readLine());
+        FileInputStream fis = new FileInputStream("res/levels/Level1.txt");
+        Scanner scanner = new Scanner(fis);
+        int level = scanner.nextInt();
+        int height = scanner.nextInt();
+        int width = scanner.nextInt();
         char [][] map = new char[height][width];
-        String line;
-        int rowNum = 0;
-        while ((line = br.readLine()) != null) {
-            for (int i = 0; i < line.length(); i++) {
-                map[rowNum][i] = line.charAt(i);
-            }
-            rowNum++;
+
+        String line = scanner.nextLine();
+        for (int i = 0; i < height; i++) {
+            line = scanner.nextLine();
+            for (int j = 0; j < line.length(); j++)
+                map[i][j] = line.charAt(j);
         }
+
 
         for (int x = 0; x < height; x++)
             for (int y = 0; y < width; y++) {
@@ -122,18 +121,6 @@ public class BombermanGame extends Application {
                 }
                 entities.add(object);
             }
-
-        /*for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
-                Entity object;
-                if (j == 0 || j == HEIGHT - 1 || i == 0 || i == WIDTH - 1) {
-                    object = new Wall(i, j, Sprite.wall.getFxImage());
-                } else {
-                    object = new Grass(i, j, Sprite.grass.getFxImage());
-                }
-                entities.add(object);
-            }
-        }*/
     }
 
     public void update(long now) {
