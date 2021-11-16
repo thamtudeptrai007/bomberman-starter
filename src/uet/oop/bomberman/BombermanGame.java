@@ -13,6 +13,10 @@ import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Animation;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +38,7 @@ public class BombermanGame extends Application {
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws IOException {
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
         gc = canvas.getGraphicsContext2D();
@@ -75,8 +79,50 @@ public class BombermanGame extends Application {
         keyboard(scene, bomberman);
     }
 
-    public void createMap() {
-        for (int i = 0; i < WIDTH; i++) {
+    public void createMap() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("res/levels/Level1.txt"));
+        int level = Integer.parseInt(br.readLine());
+        int height = Integer.parseInt(br.readLine());
+        int width = Integer.parseInt(br.readLine());
+        char [][] map = new char[height][width];
+        String line;
+        int rowNum = 0;
+        while ((line = br.readLine()) != null) {
+            for (int i = 0; i < line.length(); i++) {
+                map[rowNum][i] = line.charAt(i);
+            }
+            rowNum++;
+        }
+
+        for (int x = 0; x < height; x++)
+            for (int y = 0; y < width; y++) {
+                Entity object = null;
+                switch (map[x][y]) {
+                    case '#':
+                        object = new Wall(x, y, Sprite.wall.getFxImage());
+                        break;
+                    case '*':
+                        object = new Brick(x, y, Sprite.brick.getFxImage());
+                        break;
+                    //case 'x':
+                    //case '1':
+                    //case 'b':
+                    //case 'f':
+                    //case 's':
+                        //break;
+                    //case 'p':
+                        //object = new Bomber(x, y, Sprite.bom)
+                        //break;
+                    //case '2':
+                        //object = new
+                        //break;
+                    default:
+                        object = new Grass(x, y, Sprite.grass.getFxImage());
+                        break;
+                }
+                entities.add(object);
+            }
+        /*for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
                 Entity object;
                 if (j == 0 || j == HEIGHT - 1 || i == 0 || i == WIDTH - 1) {
@@ -86,7 +132,7 @@ public class BombermanGame extends Application {
                 }
                 entities.add(object);
             }
-        }
+        }*/
     }
 
     public void update(long now) {
