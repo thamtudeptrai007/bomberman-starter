@@ -70,6 +70,8 @@ public class Animation {
     /*
      * FlameSegment.
      */
+    /// đjtme m
+    // amen
     public static Animation bomb_exploded = new Animation(Sprite.bomb_exploded,
             Sprite.bomb_exploded1, Sprite.bomb_exploded2);
     public static Animation explosion_horizontal = new Animation(Sprite.explosion_horizontal,
