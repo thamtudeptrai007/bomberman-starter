@@ -11,7 +11,6 @@ public abstract class MoveableObject extends DynamicObject {
     protected int MOVESPEED = DEFAULTMOVESPEED;
     protected double SPF = 1;
     protected Direction direction = Direction.RIGHT;
-    protected boolean running = true;
     protected boolean moving = false;
     protected List<List<Image>> moveAnimation = new ArrayList<>();
     protected List<Image> deadAnimation = new ArrayList<>();
