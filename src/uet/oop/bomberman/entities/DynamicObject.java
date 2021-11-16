@@ -8,28 +8,25 @@ import javafx.scene.paint.Color;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class DynamicObject extends Entity {
 
-    protected List<List<Image>> imgList = new ArrayList<>();
+    protected List<Image> animation = new ArrayList<>();
     protected int currentImage = 0;
-    protected Direction direction = Direction.DEFAULT;
 
-    public DynamicObject(int x, int y, Image img) {
-        super(x, y, img);
-        for (int i = 0; i < 5; i++) {
-            imgList.add(new ArrayList<>());
-        }
+    public DynamicObject(int x, int y, Image... images) {
+        super(x, y, images[0]);
+        setAnimation(images);
     }
 
     /**
      * add list images to imageList of direction dir.
      */
-    public void addImage(Direction dir, Image... images) {
-        for (Image image: images) {
-            imgList.get(dir.getValue()).add(image);
-        }
+    public void setAnimation(Image... images) {
+        animation.clear();
+        Collections.addAll(animation, images);
     }
 
 }
