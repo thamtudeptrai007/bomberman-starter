@@ -33,10 +33,13 @@ public class Bomber extends MoveableObject {
         }
         if (moving) {
             move(entities);
-        }
-        if (currentImage != 0) {
             timer += SPF;
             currentImage = (int) timer % moveAnimation.get(direction.getValue()).size();
+        } else {
+            if (currentImage != 0) {
+                timer += SPF;
+                currentImage = (int) timer % moveAnimation.get(direction.getValue()).size();
+            }
         }
         img = moveAnimation.get(direction.getValue()).get(currentImage);
     }
