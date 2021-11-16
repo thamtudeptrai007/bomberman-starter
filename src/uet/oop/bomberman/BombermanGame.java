@@ -6,20 +6,22 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Animation;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class BombermanGame extends Application {
 
-    public static final int WIDTH = 20;
-    public static final int HEIGHT = 15;
+    public static final int WIDTH = 31;
+    public static final int HEIGHT = 13;
     public static final int FPS = 15;
     public static final long TPS = 1_000_000_000 / FPS;
 
@@ -34,7 +36,7 @@ public class BombermanGame extends Application {
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws IOException {
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
         gc = canvas.getGraphicsContext2D();
@@ -75,18 +77,50 @@ public class BombermanGame extends Application {
         keyboard(scene, bomberman);
     }
 
-    public void createMap() {
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
-                Entity object;
-                if (j == 0 || j == HEIGHT - 1 || i == 0 || i == WIDTH - 1) {
-                    object = new Wall(i, j, Sprite.wall.getFxImage());
-                } else {
-                    object = new Grass(i, j, Sprite.grass.getFxImage());
+    public void createMap() throws IOException {
+        FileInputStream fis = new FileInputStream("res/levels/Level1.txt");
+        Scanner scanner = new Scanner(fis);
+        int level = scanner.nextInt();
+        int height = scanner.nextInt();
+        int width = scanner.nextInt();
+        char [][] map = new char[width][height];
+
+        String line = scanner.nextLine();
+        for (int i = 0; i < height; i++) {
+            line = scanner.nextLine();
+            for (int j = 0; j < line.length(); j++)
+                map[j][i] = line.charAt(j);
+        }
+
+
+        for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++) {
+                Entity object = null;
+                switch (map[x][y]) {
+                    case '#':
+                        object = new Wall(x, y, Sprite.wall.getFxImage());
+                        break;
+                    case '*':
+                        object = new Brick(x, y, Sprite.brick.getFxImage());
+                        break;
+                    //case 'x':
+                    //case '1':
+                    //case 'b':
+                    //case 'f':
+                    //case 's':
+                        //break;
+                    //case 'p':
+                        //object = new Bomber(x, y, Sprite.bom)
+                        //break;
+                    //case '2':
+                        //object = new
+                        //break;
+                    default:
+                        object = new Grass(x, y, Sprite.grass.getFxImage());
+                        break;
                 }
                 entities.add(object);
             }
-        }
     }
 
     public void update(long now) {
