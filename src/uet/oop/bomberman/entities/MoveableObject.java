@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Collections;
 
 public abstract class MoveableObject extends DynamicObject {
-    public static final int MOVESPEED = 1;
+    public static final int DEFAULTMOVESPEED = 4;
+    public static final int MOVESPEED = DEFAULTMOVESPEED;
     protected Direction direction = Direction.RIGHT;
     protected boolean moving = false;
     protected List<List<Image>> moveAnimation = new ArrayList<>();
@@ -18,6 +19,31 @@ public abstract class MoveableObject extends DynamicObject {
         for (int i = 0; i < Direction.NUMBEROFDIRECTION; i++) {
             moveAnimation.add(new ArrayList<>());
         }
+    }
+
+
+    /**
+     * update
+     */
+    @Override
+    public void update(List<Entity> entities, long now) {
+        updateProperty(entities, now);
+        updateImage(entities);
+    }
+
+    public abstract void updateProperty(List<Entity> entities, long now);
+
+    public void updateImage(List<Entity> entities) {
+        if (moving) {
+            move(entities);
+            currentImage = (currentImage + 1) % (moveAnimation.get(direction.getValue()).size());
+        }
+        else {
+            if (currentImage != 0) {
+                currentImage = (currentImage + 1) % (moveAnimation.get(direction.getValue()).size());
+            }
+        }
+        img = moveAnimation.get(direction.getValue()).get(currentImage);
     }
 
     public void move(List<Entity> entities) {

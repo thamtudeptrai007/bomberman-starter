@@ -10,7 +10,7 @@ public class Brick extends StaticObject{
     }
 
     @Override
-    public void update(List<Entity> entities) {
+    public void update(List<Entity> entities, long now) {
 
     }
 }
