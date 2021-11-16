@@ -1,6 +1,9 @@
 package uet.oop.bomberman.graphics;
 
 import javafx.scene.image.Image;
+import sun.security.provider.ConfigFile;
+
+import java.awt.image.SinglePixelPackedSampleModel;
 
 /**
  * Đối tượng hoạt ảnh lưu trữ các ảnh trong hoạt ảnh.
@@ -26,12 +29,24 @@ public class Animation {
     public static Animation balloom_dead = new Animation(Sprite.balloom_dead, Sprite.mob_dead1, Sprite.mob_dead2, Sprite.mob_dead3);
 
     // ONEAL
+    public static Animation oneal_left = new Animation(Sprite.oneal_left1, Sprite.oneal_left2, Sprite.oneal_left3);
+    public static Animation oneal_right = new Animation(Sprite.oneal_right1, Sprite.oneal_right2, Sprite.oneal_right3);
+    public static Animation oneal_dead = new Animation(Sprite.oneal_dead);
 
     // Doll
+    public static Animation doll_left = new Animation(Sprite.doll_left1, Sprite.doll_left2, Sprite.doll_left3);
+    public static Animation doll_right = new Animation(Sprite.doll_right1, Sprite.doll_right2, Sprite.doll_right3);
+    public static Animation doll_dead = new Animation(Sprite.doll_dead);
 
     // Minvo
+    public static Animation minvo_left = new Animation(Sprite.minvo_left1, Sprite.minvo_left2, Sprite.minvo_left3);
+    public static Animation minvo_right = new Animation(Sprite.minvo_right1, Sprite.minvo_right2, Sprite.minvo_right3);
+    public static Animation minvo_dead = new Animation(Sprite.minvo_dead);
 
     // Kondoria
+    public static Animation kondoria_left = new Animation(Sprite.kondoria_left1, Sprite.kondoria_left2, Sprite.kondoria_left3);
+    public static Animation kondoria_right = new Animation(Sprite.kondoria_right1, Sprite.kondoria_right2, Sprite.kondoria_right3);
+    public static Animation kondoria_dead = new Animation(Sprite.kondoria_dead);
 
     /*
      * Bomb
@@ -46,10 +61,20 @@ public class Animation {
      * Brick FlameSegment
      */
 
+    public static Animation brick = new Animation(Sprite.brick);
+    public static Animation brick_explode = new Animation(Sprite.brick_exploded, Sprite.brick_exploded1, Sprite.brick_exploded2);
+
     /*
      * Powerups
      */
 
+    public static Animation bombpass = new Animation(Sprite.powerup_bombpass);
+    public static Animation bombs = new Animation(Sprite.powerup_bombs);
+    public static Animation detonator = new Animation(Sprite.powerup_detonator);
+    public static Animation flamepass = new Animation(Sprite.powerup_flamepass);
+    public static Animation flames = new Animation(Sprite.powerup_flames);
+    public static Animation speed = new Animation(Sprite.powerup_speed);
+    public static Animation wallpass = new Animation(Sprite.powerup_wallpass);
 
     public Animation(Sprite... images) {
         this.sprites = new Sprite[images.length];
