@@ -15,6 +15,7 @@ public abstract class MoveableObject extends DynamicObject {
     protected Direction direction = Direction.RIGHT;
     protected Direction animationDirection = Direction.RIGHT;
     protected boolean moving = false;
+    protected boolean alive = true;
     protected List<List<Image>> moveAnimation = new ArrayList<>();
     protected List<Image> deadAnimation = new ArrayList<>();
 
@@ -82,6 +83,11 @@ public abstract class MoveableObject extends DynamicObject {
 
     public abstract boolean canMove(List<Entity> entities, int newX, int newY);
 
+    public void dead() {
+        alive = false;
+        timer = -2;
+    }
+
     public void setMoveAnimation(Direction direction, Image... images) {
         moveAnimation.get(direction.getValue()).clear();
         Collections.addAll(moveAnimation.get(direction.getValue()), images);
@@ -90,5 +96,9 @@ public abstract class MoveableObject extends DynamicObject {
     public void setDeadAnimation(Image... images) {
         deadAnimation.clear();
         Collections.addAll(deadAnimation, images);
+    }
+
+    public boolean isAlive() {
+        return alive;
     }
 }

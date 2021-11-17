@@ -11,6 +11,16 @@ public abstract class Enemy extends MoveableObject {
 
     @Override
     public void update(List<Entity> entities, long now) {
+        if (!alive) {
+            timer += SPF;
+            currentImage = (int) (timer >= 0 ? timer : 0) % deadAnimation.size();
+            img = deadAnimation.get(currentImage);
+            if (currentImage == deadAnimation.size() - 1) {
+                entities.remove(this);
+                return;
+            }
+            return;
+        }
         autoUpdate(entities, now);
         if (moving) {
             move(entities);
@@ -27,7 +37,7 @@ public abstract class Enemy extends MoveableObject {
     @Override
     public boolean canMove(List<Entity> entities, int newX, int newY) {
         for (Entity entity:entities) {
-            if (entity instanceof Brick || entity instanceof Wall) {
+            if (entity instanceof Brick || entity instanceof Wall || entity instanceof Bomb) {
                 if (checkCollision(newX, newY, entity)) {
                     return false;
                 }
