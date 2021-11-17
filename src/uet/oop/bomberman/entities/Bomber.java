@@ -15,7 +15,7 @@ import java.util.List;
 public class Bomber extends MoveableObject {
     private boolean hasNewBomb = false;
     private int bombFlameSize = 1;
-    private int numberBomb = 2;
+    private int numberBomb = 1;
     private boolean bombPass = false;
     private List<Bomb> bombList = new ArrayList<>();
 
@@ -28,6 +28,16 @@ public class Bomber extends MoveableObject {
      */
     @Override
     public void update(List<Entity> entities, long now) {
+        if (!alive) {
+            timer += SPF / 4.0;
+            currentImage = (int) (timer >= 0 ? timer : 0) % deadAnimation.size();
+            img = deadAnimation.get(currentImage);
+            if (currentImage == deadAnimation.size() - 1) {
+                entities.remove(this);
+                return;
+            }
+            return;
+        }
         if (hasNewBomb && numberBomb > bombList.size()) {
             addBomb(entities, now);
         }
@@ -42,6 +52,15 @@ public class Bomber extends MoveableObject {
             }
         }
         img = moveAnimation.get(animationDirection.getValue()).get(currentImage);
+        for (Entity entity : entities) {
+            if (entity instanceof Enemy && checkCollision(entity)) {
+                Enemy enemy = (Enemy) entity;
+                if (enemy.isAlive()) {
+                    dead();
+                    return;
+                }
+            }
+        }
     }
 
     /**
@@ -49,9 +68,16 @@ public class Bomber extends MoveableObject {
      */
     @Override
     public boolean canMove(List<Entity> entities, int newX, int newY) {
-        for (Entity entity:entities) {
+        for (Entity entity : entities) {
             if (entity instanceof Brick || entity instanceof Wall) {
                 if (checkCollision(newX, newY, entity)) {
+                    return false;
+                }
+            }
+            if (entity instanceof Bomb && bombList.contains(entity)
+                    && checkCollision(newX, newY, entity)) {
+                Bomb bomb = (Bomb) entity;
+                if (!bomb.isOwnerPassEnable()) {
                     return false;
                 }
             }
@@ -63,13 +89,21 @@ public class Bomber extends MoveableObject {
         hasNewBomb = false;
         int posX = (x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE;
         int posY = (y + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE;
-        for (Bomb bomb: bombList) {
-            if (bomb.getX() == posX * Sprite.SCALED_SIZE && bomb.getY() == posY * Sprite.SCALED_SIZE) {
-                return;
+        for (Entity entity:entities) {
+            if (entity.getXUnit() == posX && entity.getYUnit() == posY) {
+                if (entity instanceof Bomb) {
+                    return;
+                }
+                if (entity instanceof Enemy) {
+                    Enemy enemy = (Enemy) entity;
+                    if (enemy.isAlive()) {
+                        return;
+                    }
+                }
             }
         }
         Bomb bomb = new Bomb(posX, posY,
-                bombFlameSize, now, Animation.bomb.getFxImages());
+                bombFlameSize, now, this, Animation.bomb.getFxImages());
         bombList.add(bomb);
         entities.add(bomb);
     }
@@ -82,12 +116,15 @@ public class Bomber extends MoveableObject {
     public void increaseSpeed(int incSpeed) {
         MOVESPEED += incSpeed;
     }
+
     public void increaseFlameSize() {
         bombFlameSize++;
     }
+
     public void increaseNumberBomb() {
         numberBomb++;
     }
+
     /**
      * on key pressed.
      */
@@ -142,6 +179,7 @@ public class Bomber extends MoveableObject {
                 moving = false;
                 break;
             case SPACE:
+                hasNewBomb = false;
                 break;
             default:
         }
