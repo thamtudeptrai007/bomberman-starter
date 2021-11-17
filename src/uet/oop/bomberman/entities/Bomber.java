@@ -114,7 +114,7 @@ public class Bomber extends MoveableObject {
     }
 
     public void increaseSpeed(int incSpeed) {
-        MOVESPEED += incSpeed;
+
     }
 
     public void increaseFlameSize() {
