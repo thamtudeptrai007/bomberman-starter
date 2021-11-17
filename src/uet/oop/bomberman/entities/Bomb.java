@@ -9,13 +9,16 @@ import java.util.List;
 public class Bomb extends DynamicObject {
     public static final int TIMETOEXPLODE = 2;
     private static final double SPF = 0.25;
-    protected long setupTime;
+    private long setupTime;
     private int size;
+    private Bomber owner;
+    private boolean ownerPassEnable = true;
 
-    public Bomb(int x, int y, int size, long setupTime, Image... images) {
+    public Bomb(int x, int y, int size, long setupTime, Bomber owner, Image... images) {
         super(x, y, images);
         this.setupTime = setupTime;
         this.size = size;
+        this.owner = owner;
     }
 
     /**
@@ -24,24 +27,19 @@ public class Bomb extends DynamicObject {
     @Override
     public void update(List<Entity> entities, long now) {
         if (now - setupTime >= 2_000_000_000) {
-            for (Entity entity : entities) {
-                if (entity instanceof Bomber) {
-                    Bomber bomber = (Bomber) entity;
-                    if (bomber.getBombList().contains(this)) {
-                        bomber.removeBomb(entities, this);
-                        break;
-                    }
-                }
-            }
-            makeExplosion(entities, now);
+            explode(entities, now);
             return;
+        }
+        if (ownerPassEnable && !checkCollision(owner)) {
+            ownerPassEnable = false;
         }
         img = animation.get(currentImage);
         timer += SPF;
         currentImage = (int) timer % animation.size();
     }
 
-    public void makeExplosion(List<Entity> entities, long now) {
+    public void explode(List<Entity> entities, long now) {
+        owner.removeBomb(entities, this);
         int posX = getXUnit();
         int posY = getYUnit();
         entities.add(new Flame(posX, posY,
@@ -74,6 +72,7 @@ public class Bomb extends DynamicObject {
             }
         }
     }
+
     public void createFlameLeft(List<Entity> entities, long now) {
         int posX = getXUnit();
         int posY = getYUnit();
@@ -96,6 +95,7 @@ public class Bomb extends DynamicObject {
             }
         }
     }
+
     public void createFlameTop(List<Entity> entities, long now) {
         int posX = getXUnit();
         int posY = getYUnit();
@@ -118,6 +118,7 @@ public class Bomb extends DynamicObject {
             }
         }
     }
+
     public void createFlameBottom(List<Entity> entities, long now) {
         int posX = getXUnit();
         int posY = getYUnit();
@@ -147,5 +148,9 @@ public class Bomb extends DynamicObject {
 
     public void setSetupTime(long setupTime) {
         this.setupTime = setupTime;
+    }
+
+    public boolean isOwnerPassEnable() {
+        return ownerPassEnable;
     }
 }

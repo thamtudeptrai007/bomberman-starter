@@ -160,8 +160,16 @@ public class BombermanGame extends Application {
     }
 
     public void update(long now) {
+        boolean isOverGame = true;
         for (int i = 0; i < entities.size(); i++) {
+            if (entities.get(i) instanceof Bomber) {
+                isOverGame = false;
+            }
             entities.get(i).update(entities, now);
+        }
+        if (isOverGame) {
+            System.out.println("Game over");
+            System.exit(0);
         }
     }
 
