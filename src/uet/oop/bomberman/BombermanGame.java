@@ -109,6 +109,7 @@ public class BombermanGame extends Application {
                         object = new Brick(x, y, Sprite.brick.getFxImage());
                         break;
                     case 'x':
+                        entities.add(new Portal(x, y, Sprite.portal.getFxImage()));
                         object = new Brick(x, y, Sprite.brick.getFxImage());
                         break;
                     case 'b':
@@ -123,6 +124,16 @@ public class BombermanGame extends Application {
                         entities.add(new SpeedItem(x, y, Sprite.powerup_speed.getFxImage()));
                         object = new Brick(x, y, Sprite.brick.getFxImage());
                         break;
+                    default:
+                }
+                if (object != null) {
+                    entities.add(object);
+                }
+            }
+        for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++) {
+                Entity object = null;
+                switch (map[x][y]) {
                     case 'p':
                         Bomber bomber = new Bomber(x, y, Sprite.player_right.getFxImage());
                         bomber.setMoveAnimation(Direction.LEFT, Animation.player_left.getFxImages());
@@ -168,7 +179,7 @@ public class BombermanGame extends Application {
             entities.get(i).update(entities, now);
         }
         if (isOverGame) {
-            System.out.println("Game over");
+            System.out.println("Game over!");
             System.exit(0);
         }
     }
